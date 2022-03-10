@@ -1,0 +1,1 @@
+activer dans php l'extension gd
