@@ -4,9 +4,9 @@ Scout et Guide de France
 Vous trouverez ci joint un site en PHP/SQLi permettant de gérer le matériel d'un groupe scout.
  - On peut créer tout type de matériel (tente, marabout, latrine, trépied...)
  - On peut faire des réservations
- - Gerer l'état du matériel, le rendre indisponible temporairement, ajouter des commenteraires...
+ - Gerer l'état du matériel, le rendre indisponible temporairement, ajouter des commentaires...
  - Génération de listes permettant de faire un état rapide du matériel
- - Génération d'un QRCode renvoyant sur un formulaire afin que sur les camps les chef puisse remonter les problèmes sur le matériel
+ - Génération d'un QRCode renvoyant sur un formulaire afin que sur les camps les chefs puissent remonter les problèmes sur le matériel
  - Installation automatique de la base de donnée
  - Création de plusieurs comptes utilisateur
  
