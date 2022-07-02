@@ -189,10 +189,10 @@ if((check_admin($_SERVER['PHP_SELF'])==true))
 
 			<p>Type de matériel<br>
 			<?php echo $liste_materiel;?>
-			<p>Information diverse<br>(ex. nombre de places, taille du marabout...)<br>
+			<p>Information diverse<br>(ex. Compagnon groupe n°1...)<br>
 			<input id="info" name="info" type="text" maxlength="30"></p>												
 															
-			<p>Modèle<br>
+			<p>Modèle<br>(ex. nombre de places, taille du marabout...)<br>
 			<input id="modele" name="modele" type="text" value = "" maxlength="256"></p>												
 															
 			<p>Date de mise en service:<br>
