@@ -34,7 +34,7 @@ mysqli_query($db,"SET NAMES 'utf8'");
 	
 $shortname = [];
 $array_materiel = array();
-$liste_materiel= "<SELECT id='materiel_choisit' name='type' size='1' onChange=\"viewlist()\" ><OPTION>Autre materiel ou demande";	
+$liste_materiel= "<SELECT id='materiel_choisit' name='type' size='1' onChange=\"viewlist()\" ><OPTION>--Faites un choix--";	
 
 $sql = "SELECT type,shortname FROM materiel_list ORDER BY type"; 
 if ($resultat = mysqli_query($db,$sql))
@@ -51,7 +51,7 @@ else
 {
 	info_message_erreur("Aucun type de matériel enregistré");
 }	
-$liste_materiel .= "</SELECT>";
+$liste_materiel .= "<OPTION>Autre materiel ou demande</SELECT>";
 
 if ($_POST)
 {
@@ -75,7 +75,7 @@ if ($_POST)
   
 		if(in_array($_POST['type'],$array_materiel))
 		{
-			$comment_to_add = '\nDe '.$_POST['nom'].' le '.date('d/m/Y').':\n'.$post_materiel;
+			$comment_to_add = '\n - De '.$_POST['nom'].' le '.date('d/m/Y').':\n'.$_POST['evenement'];
 			$to_replace = $_POST[$_POST['type'].'_sel'];
 			$curid = str_replace($shortname[$_POST['type']], "", $_POST[$_POST['type'].'_sel']);
 			$curtype = $_POST['type'];
@@ -121,7 +121,7 @@ if ($_POST)
 
 	foreach($array_materiel as $materiel)
 	{
-		$liste_deroulante = "<SELECT id='".$materiel."_sel' name='".$materiel."_sel' size='1'>";	
+		$liste_deroulante = "<SELECT id='".$materiel."_sel' name='".$materiel."_sel' size='1' onChange=\"viewComment('".$materiel."')\"><OPTION>--";	
 		$sql = "SELECT id FROM materiel WHERE type='".$materiel."' ORDER BY  length(id),id"; 
 		if ($resultat = mysqli_query($db,$sql))
 		{	
@@ -141,7 +141,7 @@ if ($_POST)
 				echo 'none';
 			echo '" >';
 			echo "<br>".$liste_deroulante;
-		echo "&nbsp;&nbsp;&nbsp;<input class='btn btn-primary' type='button' value='Voir etat' onclick=\"location.href='edit_materiel.php?type=".$materiel."&id='+get_id_materiel(document.getElementById('".$materiel."_sel').value,'".$shortname[$materiel]."');\"/></div>";
+			echo "<br><br><input  id=\"bt_voir_etat_".$materiel."\" type='button' class='btn btn-primary' value='Voir etat' onclick=\"location.href='edit_materiel.php?type=".$materiel."&id='+get_id_materiel(document.getElementById('".$materiel."_sel').value,'".$shortname[$materiel]."');\"/></div>";
 		}
 		else
 		{
@@ -150,6 +150,7 @@ if ($_POST)
 		
 	}
 ?>
+	<div id="div_comment" style="display :none" >
 	<br>
 	Nom :<br><input type="text" id="nom" name="nom" required maxlength="30" size="20">
 	<br>   <br>
@@ -159,7 +160,7 @@ if ($_POST)
 	</fieldset>
 	<br>
 	<input class="btn btn-primary"  name="add_message" type="submit" value="Envoyer le commentaire" />
-
+	</div>
 </form>
 </center>
 <?php template_fin_bloc_normal(); ?>
@@ -169,10 +170,19 @@ if ($_POST)
 function viewlist()
 {
 	var selectElmt = document.getElementById('materiel_choisit');
+	
 <?php 	
 	foreach($array_materiel as $materiel)
 	{
 		echo "
+			document.getElementById(\"div_comment\").style.display='none';
+			document.getElementById(\"bt_voir_etat_".$materiel."\").style.display='none';
+			if (selectElmt.options[selectElmt.selectedIndex].value == '--Faites un choix--') 
+			{
+				document.getElementById(\"div_".$materiel."\").style.display='none';
+			}
+			else
+			{
 		if (selectElmt.options[selectElmt.selectedIndex].value == '".$materiel."')
 		{
 			document.getElementById(\"div_".$materiel."\").style.display='block';
@@ -180,11 +190,39 @@ function viewlist()
 		else
 		{
 			document.getElementById(\"div_".$materiel."\").style.display='none';
-		}\n";
-
+				}
+				
+				if (selectElmt.options[selectElmt.selectedIndex].value == 'Autre materiel ou demande')
+					document.getElementById(\"div_comment\").style.display='block';
+			}
+			\n";
 	}
 ?>
 }
+
+function viewComment(materiel)
+{
+	var selectElmt = document.getElementById(materiel + '_sel');
+	//document.write(list_elem);
+<?php 	
+
+			echo "
+			if (selectElmt.options[selectElmt.selectedIndex].value == '--') 
+			{
+				document.getElementById(\"div_comment\").style.display='none';
+				document.getElementById(\"bt_voir_etat_\" + materiel).style.display='none';
+	}
+			else
+			{
+				document.getElementById(\"div_comment\").style.display='block';
+				document.getElementById(\"bt_voir_etat_\" + materiel).style.display='block';
+			}
+
+			\n";
+
+?>
+}
+
 
 function get_id_materiel(nom,shortname)
 {
